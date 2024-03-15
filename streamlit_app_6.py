@@ -89,7 +89,7 @@ if 'Path' in df.columns and df.iloc[0]['Path'] == 'input_text:':
 else:
     perc_true = ((df["Is Same"].sum()) / df.shape[0]) * 100
 
-st.info(f"Percent accuracy: {perc_true:.2f}%")
+st.markdown(f"## Percent accuracy: {perc_true:.2f}%")
 df = df[~df["Path"].str.contains("input_text", na=False)]
 
 # Function to apply conditional formatting and return HTML
@@ -149,61 +149,59 @@ def display_tree_view(obj1, obj2, path=''):
         st.markdown(f"**{path}:** `{obj1}` ≠ `{obj2}`", unsafe_allow_html=True)
 
 import streamlit as st
+import streamlit as st
+import copy
 
-# Define the annotate_differences function here
-def annotate_differences(obj1, obj2):
-    if isinstance(obj1, dict) and isinstance(obj2, dict):
-        for key in obj1:
-            if key in obj2:
-                if obj1[key] != obj2[key]:
-                    if isinstance(obj1[key], (dict, list)) and isinstance(obj2[key], (dict, list)):
-                        annotate_differences(obj1[key], obj2[key])
+# Define the annotate_differences function to compare json1 against json2
+# and annotate json2 with the differences
+def annotate_differences(base, compare, path=""):
+    if isinstance(base, dict) and isinstance(compare, dict):
+        for key in compare:
+            if key in base:
+                if base[key] != compare[key]:
+                    if isinstance(base[key], (dict, list)) and isinstance(compare[key], (dict, list)):
+                        annotate_differences(base[key], compare[key], path=f"{path}.{key}" if path else key)
                     else:
-                        obj1[key] = f"{obj1[key]} ***DIFFERENCE*** {obj2[key]}"
+                        compare[key] = f"{compare[key]} (***DIFFERENCE***)"
             else:
-                obj1[key] = f"{obj1[key]} ***MISSING IN SECOND OBJECT***"
-        for key in obj2:
-            if key not in obj1:
-                obj1[key] = f"***MISSING IN FIRST OBJECT*** {obj2[key]}"
-    elif isinstance(obj1, list) and isinstance(obj2, list):
-        for i in range(min(len(obj1), len(obj2))):
-            if obj1[i] != obj2[i]:
-                if isinstance(obj1[i], (dict, list)) and isinstance(obj2[i], (dict, list)):
-                    annotate_differences(obj1[i], obj2[i])
+                compare[key] = f"{compare[key]} (***ADDITIONAL***)"
+        for key in base:
+            if key not in compare:
+                compare[key] = "***MISSING***"
+    elif isinstance(base, list) and isinstance(compare, list):
+        min_len = min(len(base), len(compare))
+        for i in range(min_len):
+            if base[i] != compare[i]:
+                if isinstance(base[i], (dict, list)) and isinstance(compare[i], (dict, list)):
+                    annotate_differences(base[i], compare[i], path=f"{path}[{i}]")
                 else:
-                    obj1[i] = f"{obj1[i]} ***DIFFERENCE*** {obj2[i]}"
-        if len(obj1) < len(obj2):
-            for i in range(len(obj1), len(obj2)):
-                obj1.append(f"***MISSING IN FIRST OBJECT*** {obj2[i]}")
-        elif len(obj1) > len(obj2):
-            for i in range(len(obj2), len(obj1)):
-                obj1[i] = f"{obj1[i]} ***MISSING IN SECOND OBJECT***"
+                    compare[i] = f"{compare[i]} (***DIFFERENCE***)"
+        if len(compare) > len(base):
+            for i in range(len(base), len(compare)):
+                compare[i] = f"{compare[i]} (***ADDITIONAL***)"
+        elif len(compare) < len(base):
+            compare.extend(["***MISSING***"] * (len(base) - len(compare)))
     else:
-        return f"{obj1} ***DIFFERENCE*** {obj2}"
+        if base != compare:
+            return f"{compare} (***DIFFERENCE***)"
 
-# Assuming the rest of your Streamlit setup is defined above
+# Adjusted "Tree View" option
 if view_option == 'Table View':
-    # Existing logic to prepare and display the table view
     html = dataframe_to_html_with_style(df)
     st.markdown(html, unsafe_allow_html=True)
 elif view_option == 'Tree View':
-    # Display the tree view with annotated differences
     json1 = read_json(selected_json1)
     json2 = read_json(selected_json2)
     
-    # Create a copy of json2 to annotate so original data is not modified
+    # Annotate json2 based on differences from json1
     annotated_json2 = copy.deepcopy(json2)
-    
-    # Annotate differences in the copy of json2
     annotate_differences(json1, annotated_json2)
-    
-    # Use columns to display the two JSON objects side by side
+
     col1, col2 = st.columns(2)
-    
     with col1:
-        st.subheader("Original JSON")
+        st.subheader("Original JSON (json1)")
         st.json(json1)
-    
     with col2:
-        st.subheader("Annotated JSON")
+        st.subheader("Annotated JSON (json2)")
         st.json(annotated_json2)
+
