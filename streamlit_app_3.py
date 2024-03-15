@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import json
+import os
 
 # Assuming your read_json function remains the same
 def read_json(filename):
@@ -27,9 +28,21 @@ def print_dicts_css(dict1, dict2):
 
 st.set_page_config(layout="wide")
 st.title('JSON Comparison Result')
-# Load and compare JSONs (assuming you have example1.json and example3.json)
-json1 = read_json('example1.json')
-json2 = read_json('example3.json')
+
+# 1. List available JSON files
+directory = '.'  # Specify the directory containing your JSON files
+json_files = [f for f in os.listdir(directory) if f.endswith('.json')]
+
+# 2. Create dropdowns for file selection
+col1, col2 = st.columns(2)
+with col1:
+    selected_json1 = st.selectbox('Select the first JSON file:', json_files, index=0)  # Default to first file
+with col2:
+    selected_json2 = st.selectbox('Select the second JSON file:', json_files, index=1 if len(json_files) > 1 else 0)  # Default to second file
+
+# 3. Load and compare the selected JSON files
+json1 = read_json(selected_json1)
+json2 = read_json(selected_json2)
 
 # Assuming json1 and json2 are lists and you want the 'input_text' from the first item
 if isinstance(json1, list) and len(json1) > 0:
