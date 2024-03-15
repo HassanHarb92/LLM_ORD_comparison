@@ -1,0 +1,78 @@
+[
+  {
+    "input_text": "To a solution of 3-amino-5-t-butylisoxazole (2.80 g) in pyridine (10 ml) is dropwise added isobutyryl chloride (2.34 g) keeping the mixture below 10\u00b0 C. The reaction mixture is stirred with cooling for 30 minutes and at room temperature for 1 hour and evaporated to remove the pyridine. The residue is mixed with 5% hydrochloric acid solution (40 ml) and shaken with methylene chloride. The methylene chloride layer is separated, washed with saturated aqueous sodium hydrogen carbonate and water, dried over anhydrous sodium sulfate and evaporated to remove the methylene chloride. The residue is chromatographed on a column of silica gel and recrystallized from n-hexane to give N-(5-t-butyl-3-isoxazolyl)isobutyramide (3.85 g) as colorless needles melting at 123.0\u00b0 to 124.0\u00b0 C.",
+    "output_reaction_inputs": {
+      "m3": {
+        "components": [
+          {
+            "identifiers": [
+              {
+                "type": "NAME",
+                "value": "pyridine"
+              }
+            ],
+            "amount": {
+              "volume": {
+                "value": 10.0,
+                "units": "MILLILITER"
+              }
+            },
+            "reactionRole": "SOLVENT"
+          }
+        ]
+      },
+      "m1": {
+        "components": [
+          {
+            "identifiers": [
+              {
+                "type": "NAME",
+                "value": "3-amino-5-t-butylisoxazole"
+              }
+            ],
+            "amount": {
+              "mass": {
+                "value": 2.8,
+                "units": "GRAM"
+              }
+            },
+            "reactionRole": "REACTANT"
+          }
+        ]
+      },
+      "m2": {
+        "components": [
+          {
+            "identifiers": [
+              {
+                "type": "NAME",
+                "value": "isobutyryl chloride"
+              }
+            ],
+            "amount": {
+              "mass": {
+                "value": 2.34,
+                "units": "GRAM"
+              }
+            },
+            "reactionRole": "REACTANT"
+          }
+        ]
+      }
+    },
+    "output_reaction_conditions": {
+      "temperature": {
+        "control": {
+          "type": "AMBIENT"
+        }
+      },
+      "stirring": {
+        "type": "CUSTOM",
+        "details": "The reaction mixture is stirred"
+      },
+      "conditionsAreDynamic": true,
+      "details": "See reaction.notes.procedure_details."
+    },
+    "reaction_id": "ord-b48792f085f5446ab6ee7d03729abadf"
+  }
+]
