@@ -28,7 +28,8 @@ def print_dicts_css(dict1, dict2):
     return recursive_print(dict1, dict2)
 
 st.set_page_config(layout="wide")
-st.title('JSON Comparison Result')
+st.title('LLM ORD Reaction Parser')
+st.markdown('## JSON Comparison Result')
 
 # 1. List available JSON files
 directory = '.'  # Specify the directory containing your JSON files
