@@ -202,9 +202,9 @@ elif view_option == 'Tree View':
 
     col1, col2 = st.columns(2)
     with col1:
-        st.subheader("Original JSON (json1)")
+        st.subheader("Ground Truth")
         st.json(json1)
     with col2:
-        st.subheader("Annotated JSON (json2)")
+        st.subheader("LLM Inferred")
         st.json(annotated_json2)
 
